@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+    <meta name="viewport" content="widht=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      /* Create four equal columns that floats next to each other */
+      .column {
+        float: left;
+        width: 25%;
+        padding: 10px;
+        height: 300px; /* Should be removed. Only for demonstration */
+      }
+
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+    </style>
+    <title>Cuaca.id</title>
+  </head>
+  <body>
+    <h1>Perkiraan Cuaca di Indonesia</h1>
+    <div id="pilih_wilayah">
+      <td>
+        <select
+          id="province_list"
+          onchange="showCityInThisProv(this.value)"
+        ></select>
+      </td>
+      <td>
+        <select
+          id="city_list"
+          onchange="showDistrictsInThisCity(this.value)"
+        ></select>
+      </td>
+      <td>
+        <select id="district_list"></select>
+      </td>
+    </div>
+    <br />
+    <div id="aksi">
+      <button type="button" onclick="fetchData()">Fetch Data</button>
+      <button type="button" onclick="resetOption()">Reset</button>
+    </div>
+    <div id="tampil"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
