@@ -163,27 +163,33 @@ async function fetchData() {
   let i = 1;
   weather.forEach((cuaca) => {
     if (i === 1) {
-      html += `<h2>Hari Ini (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
+      html += `<div class="card card-1">
+               <h2>Hari Ini (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
     } else if (i === 5) {
-      html += `<h2>Besok (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
+      html += `</div>
+               <div class="card card-2">
+               <h2>Besok (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
     } else if (i === 9) {
-      html += `<h2>Lusa (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
+      html += `</div>
+               <div class="card card-3">
+               <h2>Lusa (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
     }
+
     if (i % 4 === 1) {
       let htmlSegment = `<div class="row">
                          <div class="column">
                          <h3>Pukul ${cuaca.jamCuaca.slice(11, 16)}</h3>
                          <h4>${cuaca.cuaca}</h4>
-                         <p>Temperatur: ${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
-                         <p>=====================</p>
+                         <p>${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
+                         <p>=============</p>
                          </div>`;
       html += htmlSegment;
     } else if (i % 4 === 0) {
       let htmlSegment = `<div class="column">
                          <h3>Pukul ${cuaca.jamCuaca.slice(11, 16)}</h3>
                          <h4>${cuaca.cuaca}</h4>
-                         <p>Temperatur: ${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
-                         <p>=====================</p>
+                         <p>${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
+                         <p>=============</p>
                          </div>
                          </div>`;
       html += htmlSegment;
@@ -191,10 +197,13 @@ async function fetchData() {
       let htmlSegment = `<div class="column">
                          <h3>Pukul ${cuaca.jamCuaca.slice(11, 16)}</h3>
                          <h4>${cuaca.cuaca}</h4>
-                         <p>Temperatur: ${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
-                         <p>=====================</p>
+                         <p>${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
+                         <p>=============</p>
                          </div>`;
       html += htmlSegment;
+    }
+    if (i === 12) {
+      html += `</div>`;
     }
     i++;
   });

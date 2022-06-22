@@ -9,12 +9,50 @@
         box-sizing: border-box;
       }
 
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(238, 237, 237, 0.438);
+        color: rgb(105, 104, 104);
+        font-family: sans-serif;
+      }
+      .container {
+        width: fit-content;
+      }
+      .input {
+        margin: 2rem;
+      }
+      .card {
+        padding: 1.2rem 3rem 1rem 3rem;
+        margin: 2rem;
+        border-radius: 1.5rem;
+        border-color: rgba(238, 237, 237, 0.438);
+        box-shadow: 5px 8px 10px #80808033;
+      }
+      @media (max-width: 767px) {
+        .card {
+          height: 10rem;
+          padding: 1.5rem 1.5rem 1rem 1.5rem;
+        }
+      }
+      .card-1,
+      .card-2,
+      .card-3 {
+        background: linear-gradient(
+          to right,
+          #ffffff 50%,
+          rgba(241, 224, 190, 0.507)
+        );
+      }
+
       /* Create four equal columns that floats next to each other */
       .column {
         float: left;
         width: 25%;
         padding: 10px;
-        height: 300px; /* Should be removed. Only for demonstration */
+        height: 200px; /* Should be removed. Only for demonstration */
       }
 
       /* Clear floats after the columns */
@@ -23,34 +61,43 @@
         display: table;
         clear: both;
       }
+
+      h3 {
+        font-weight: normal;
+      }
     </style>
     <title>Cuaca.id</title>
   </head>
   <body>
-    <h1>Perkiraan Cuaca di Indonesia</h1>
-    <div id="pilih_wilayah">
-      <td>
-        <select
-          id="province_list"
-          onchange="showCityInThisProv(this.value)"
-        ></select>
-      </td>
-      <td>
-        <select
-          id="city_list"
-          onchange="showDistrictsInThisCity(this.value)"
-        ></select>
-      </td>
-      <td>
-        <select id="district_list"></select>
-      </td>
+    <div class="container">
+      <div class="input">
+        <h1>Perkiraan Cuaca di Indonesia</h1>
+        <div id="pilih_wilayah">
+          <td>
+            <select
+              id="province_list"
+              onchange="showCityInThisProv(this.value)"
+            ></select>
+          </td>
+          <td>
+            <select
+              id="city_list"
+              onchange="showDistrictsInThisCity(this.value)"
+            ></select>
+          </td>
+          <td>
+            <select id="district_list"></select>
+          </td>
+        </div>
+        <br />
+        <div id="aksi">
+          <button type="button" onclick="fetchData()">Tampilkan</button>
+          <button type="button" onclick="resetOption()">Reset</button>
+        </div>
+      </div>
+
+      <div id="tampil"></div>
     </div>
-    <br />
-    <div id="aksi">
-      <button type="button" onclick="fetchData()">Fetch Data</button>
-      <button type="button" onclick="resetOption()">Reset</button>
-    </div>
-    <div id="tampil"></div>
     <script src="script.js"></script>
   </body>
 </html>
