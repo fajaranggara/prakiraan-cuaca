@@ -162,6 +162,18 @@ async function fetchData() {
   let html = "";
   let i = 1;
   weather.forEach((cuaca) => {
+    let jam = "";
+    if (
+      cuaca.jamCuaca.slice(11, 13) === "00" ||
+      cuaca.jamCuaca.slice(11, 13) === "18"
+    ) {
+      jam = "pm";
+    } else {
+      jam = "am";
+    }
+
+    let jenisCuaca = cuaca.cuaca.toLowerCase();
+
     if (i === 1) {
       html += `<div class="card card-1">
                <h2>Hari Ini (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
@@ -179,26 +191,29 @@ async function fetchData() {
       let htmlSegment = `<div class="row">
                          <div class="column">
                          <h3>Pukul ${cuaca.jamCuaca.slice(11, 16)}</h3>
+                         <img src="img/${jenisCuaca}-${jam}.png" width="50"/>
                          <h4>${cuaca.cuaca}</h4>
                          <p>${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
-                         <p>=============</p>
+                         <h5>Kelembapan: ${cuaca.humidity}%</h5>
                          </div>`;
       html += htmlSegment;
     } else if (i % 4 === 0) {
       let htmlSegment = `<div class="column">
                          <h3>Pukul ${cuaca.jamCuaca.slice(11, 16)}</h3>
+                         <img src="img/${jenisCuaca}-${jam}.png" width="50"/>
                          <h4>${cuaca.cuaca}</h4>
                          <p>${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
-                         <p>=============</p>
+                         <h5>Kelembapan: ${cuaca.humidity}%</h5>
                          </div>
                          </div>`;
       html += htmlSegment;
     } else {
       let htmlSegment = `<div class="column">
                          <h3>Pukul ${cuaca.jamCuaca.slice(11, 16)}</h3>
+                         <img src="img/${jenisCuaca}-${jam}.png" width="50"/>
                          <h4>${cuaca.cuaca}</h4>
                          <p>${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
-                         <p>=============</p>
+                         <h5>Kelembapan: ${cuaca.humidity}%</h5>
                          </div>`;
       html += htmlSegment;
     }
