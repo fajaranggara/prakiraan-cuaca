@@ -193,7 +193,7 @@ async function tampilkanCuaca(data, wilayah) {
       if (i % 4 === 1) {
         let htmlSegment = `<div class="row">
                          <div class="column">
-                         <h3>Pukul ${dCuaca.jamCuaca.slice(11, 16)}</h3>
+                         <h3>${dCuaca.jamCuaca.slice(11, 16)}</h3>
                          <img src="img/${jenisCuaca}-${jam}.png" width="50"/>
                          <h4>${dCuaca.cuaca}</h4>
                          <p>${dCuaca.tempC}°C || ${dCuaca.tempF}°F</p>
@@ -202,7 +202,7 @@ async function tampilkanCuaca(data, wilayah) {
         html += htmlSegment;
       } else if (i % 4 === 0) {
         let htmlSegment = `<div class="column">
-                         <h3>Pukul ${dCuaca.jamCuaca.slice(11, 16)}</h3>
+                         <h3>${dCuaca.jamCuaca.slice(11, 16)}</h3>
                          <img src="img/${jenisCuaca}-${jam}.png" width="50"/>
                          <h4>${dCuaca.cuaca}</h4>
                          <p>${dCuaca.tempC}°C || ${dCuaca.tempF}°F</p>
@@ -212,7 +212,7 @@ async function tampilkanCuaca(data, wilayah) {
         html += htmlSegment;
       } else {
         let htmlSegment = `<div class="column">
-                         <h3>Pukul ${dCuaca.jamCuaca.slice(11, 16)}</h3>
+                         <h3>${dCuaca.jamCuaca.slice(11, 16)}</h3>
                          <img src="img/${jenisCuaca}-${jam}.png" width="50"/>
                          <h4>${dCuaca.cuaca}</h4>
                          <p>${dCuaca.tempC}°C || ${dCuaca.tempF}°F</p>
