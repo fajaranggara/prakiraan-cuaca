@@ -8,7 +8,7 @@ fetch("https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json")
     let pilihKecamatan = document.getElementById("district");
     pilihKecamatan.style.visibility = "hidden";
 
-    ///// menambahkan option pada tag select yang berid provinsi
+    ///// menambahkan option pada tag select yang ber-id provinsi
     let daftarProvinsi = provinsi(data);
     let html = "";
     let i = 0;
@@ -21,9 +21,10 @@ fetch("https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json")
     });
     pilihProvinsi.innerHTML = html;
 
-    ///// menambahkan option pada tag select yang berid city
+    ///// menambahkan option pada tag select yang ber-id city
     let daftarKota = kota(data);
     pilihProvinsi.addEventListener("change", function () {
+      pilihProvinsi.disabled = true;
       pilihKota.style.visibility = "visible";
       const provinsiTerpilih = pilihProvinsi.value;
       const kota = daftarKota.get(provinsiTerpilih);
@@ -40,9 +41,10 @@ fetch("https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json")
       pilihKota.innerHTML = html;
     });
 
-    ///// menambahkan option pada tag select yang berid district
+    ///// menambahkan option pada tag select yang ber-id district
     let daftarKecamatan = kecamatan(data);
     pilihKota.addEventListener("change", function () {
+      pilihKota.disabled = true;
       pilihKecamatan.style.visibility = "visible";
       const kotaTerpilih = pilihKota.value;
       const kecamatan = daftarKecamatan.get(kotaTerpilih);
