@@ -90,30 +90,24 @@
         <h1>Prakiraan Cuaca di Wilayah Indonesia</h1>
         <div id="pilih_wilayah">
           <td>
-            <select
-              id="province_list"
-              onchange="showCityInThisProv(this.value)"
-            ></select>
+            <select id="province"></select>
           </td>
           <td>
-            <select
-              id="city_list"
-              onchange="showDistrictsInThisCity(this.value)"
-            ></select>
+            <select id="city"></select>
           </td>
           <td>
-            <select id="district_list"></select>
+            <select id="district"></select>
           </td>
         </div>
         <br />
-        <div id="aksi">
-          <button type="button" onclick="fetchData()">Tampilkan</button>
-          <button type="button" onclick="resetOption()">Reset</button>
+        <div>
+          <button id="tombolTampil" type="button">Tampilkan</button>
+          <button id="tombolReset" type="button">Reset</button>
         </div>
       </div>
 
       <div id="tampil"></div>
     </div>
-    <script src="script.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>

@@ -1,17 +1,138 @@
-showProvince();
+// let dataWilayah = "";
+fetch("https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json")
+  .then((res) => res.json())
+  .then((data) => {
+    let pilihProvinsi = document.getElementById("province");
+    let pilihKota = document.getElementById("city");
+    pilihKota.style.visibility = "hidden";
+    let pilihKecamatan = document.getElementById("district");
+    pilihKecamatan.style.visibility = "hidden";
 
-//========================
-async function getWilayah() {
-  let url = "https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json";
+    ///// menambahkan option pada tag select yang berid provinsi
+    let daftarProvinsi = provinsi(data);
+    let html = "";
+    let i = 0;
+    daftarProvinsi.forEach(function (provinsi) {
+      if (i === 0) {
+        html += `<option value="value">Pilih provinsi</option>`;
+      }
+      i++;
+      html += `<option value="${provinsi}">${provinsi}</option>`;
+    });
+    pilihProvinsi.innerHTML = html;
+
+    ///// menambahkan option pada tag select yang berid city
+    let daftarKota = kota(data);
+    pilihProvinsi.addEventListener("change", function () {
+      pilihKota.style.visibility = "visible";
+      const provinsiTerpilih = pilihProvinsi.value;
+      const kota = daftarKota.get(provinsiTerpilih);
+
+      html = "";
+      i = 0;
+      kota.forEach(function (kota) {
+        if (i === 0) {
+          html += `<option value="value">Pilih Kota/Kab.</option>`;
+        }
+        i++;
+        html += `<option value="${kota}">${kota}</option>`;
+      });
+      pilihKota.innerHTML = html;
+    });
+
+    ///// menambahkan option pada tag select yang berid district
+    let daftarKecamatan = kecamatan(data);
+    pilihKota.addEventListener("change", function () {
+      pilihKecamatan.style.visibility = "visible";
+      const kotaTerpilih = pilihKota.value;
+      const kecamatan = daftarKecamatan.get(kotaTerpilih);
+
+      html = "";
+      i = 0;
+      kecamatan.forEach(function (kecamatan) {
+        if (i === 0) {
+          html += `<option value="value">Pilih Kecamatan</option>`;
+        }
+        i++;
+        html += `<option value="${kecamatan}">${kecamatan}</option>`;
+      });
+      pilihKecamatan.innerHTML = html;
+    });
+
+    /////
+    pilihKecamatan.addEventListener("change", function () {
+      console.log(pilihKecamatan.value);
+    });
+
+    let tomboltampil = document.getElementById("tombolTampil");
+    tomboltampil.addEventListener("click", function () {
+      tampilkanCuaca(data, pilihKecamatan.value);
+    });
+
+    let tombolReset = document.getElementById("tombolReset");
+    tombolReset.addEventListener("click", function () {
+      resetWilayah();
+    });
+  });
+
+function provinsi(data) {
   try {
-    let res = await fetch(url);
-    return await res.json();
+    const daftarProvinsi = new Set();
+    data.forEach((data) => {
+      daftarProvinsi.add(data.propinsi);
+    });
+    return daftarProvinsi;
   } catch (error) {
     console.log(error);
   }
 }
 
-async function getCuaca(idWilayah) {
+function kota(data) {
+  try {
+    const provinsi = new Set();
+    data.forEach((data) => {
+      provinsi.add(data.propinsi);
+    });
+    const daftarKota = new Map();
+    provinsi.forEach((provinsi) => {
+      const kota = new Set();
+      data.forEach((data) => {
+        if (data.propinsi === provinsi) {
+          kota.add(data.kota);
+        }
+      });
+      daftarKota.set(provinsi, kota);
+    });
+    return daftarKota;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function kecamatan(data) {
+  try {
+    const kota = new Set();
+    data.forEach((data) => {
+      kota.add(data.kota);
+    });
+
+    const daftarKecamatan = new Map();
+    kota.forEach((kota) => {
+      const kecamatan = new Set();
+      data.forEach((data) => {
+        if (data.kota === kota) {
+          kecamatan.add(data.kecamatan);
+        }
+      });
+      daftarKecamatan.set(kota, kecamatan);
+    });
+    return daftarKecamatan;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function cuaca(idWilayah) {
   let url = `https://ibnux.github.io/BMKG-importer/cuaca/${idWilayah}.json`;
   try {
     let res = await fetch(url);
@@ -21,223 +142,101 @@ async function getCuaca(idWilayah) {
   }
 }
 
-async function getProvince() {
-  let allData = await getWilayah();
-
+async function tampilkanCuaca(data, wilayah) {
   try {
-    const province = new Set();
-    allData.forEach((data) => {
-      province.add(data.propinsi);
+    let idWilayah = 0;
+    data.forEach((data) => {
+      if (data.kecamatan === wilayah) {
+        idWilayah = data.id;
+      }
     });
-    return province;
-  } catch (error) {
-    console.log(error);
-  }
-}
+    console.log("idWilayah " + idWilayah);
+    //const dataCuaca = await cuaca(data, idWilayah);
+    let dataCuaca = await cuaca(idWilayah);
+    console.log(dataCuaca);
 
-async function getCity() {
-  let allData = await getWilayah();
-  let allProvince = await getProvince();
-  try {
-    const cityInThisProvince = new Map();
-    allProvince.forEach((province) => {
-      const city = new Set();
-      allData.forEach((data) => {
-        if (data.propinsi === province) {
-          city.add(data.kota);
-        }
-      });
-      cityInThisProvince.set(province, city);
-    });
-    return cityInThisProvince;
-  } catch (error) {
-    console.log(error);
-  }
-}
+    let html = "";
+    let i = 1;
+    dataCuaca.forEach((dCuaca) => {
+      let jam = "";
+      if (
+        dCuaca.jamCuaca.slice(11, 13) === "00" ||
+        dCuaca.jamCuaca.slice(11, 13) === "18"
+      ) {
+        jam = "pm";
+      } else {
+        jam = "am";
+      }
 
-async function getDistricts() {
-  let allData = await getWilayah();
+      let jenisCuaca = dCuaca.cuaca.toLowerCase();
 
-  const allCity = new Set();
-  allData.forEach((data) => {
-    allCity.add(data.kota);
-  });
-
-  try {
-    const districInThisCity = new Map();
-    allCity.forEach((city) => {
-      const districts = new Set();
-      allData.forEach((data) => {
-        if (data.kota === city) {
-          districts.add(data.kecamatan);
-        }
-      });
-      districInThisCity.set(city, districts);
-    });
-    return districInThisCity;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function showProvince() {
-  let province = await getProvince();
-
-  let html = "";
-  let i = 0;
-  province.forEach(function (provinceName) {
-    if (i === 0) {
-      html += `<option value="value">Pilih provinsi</option>`;
-    }
-    i++;
-    html += `<option value="${provinceName}">${provinceName}</option>`;
-  });
-
-  let provinceOption = document.getElementById("province_list");
-  provinceOption.innerHTML = html;
-  let cityOption = document.getElementById("city_list");
-  cityOption.style.visibility = "hidden";
-  let districtOption = document.getElementById("district_list");
-  districtOption.style.visibility = "hidden";
-}
-
-async function showCityInThisProv(province) {
-  let cityInThisProvince = await getCity();
-  const selectedProvince = cityInThisProvince.get(province);
-
-  let html = "";
-  let i = 0;
-  selectedProvince.forEach(function (city) {
-    if (i === 0) {
-      html += `<option value="value">Pilih Kota/Kab.</option>`;
-    }
-    i++;
-    html += `<option value="${city}">${city}</option>`;
-  });
-
-  let provinceOption = document.getElementById("province_list");
-  provinceOption.disabled = true;
-  let cityOption = document.getElementById("city_list");
-  cityOption.innerHTML = html;
-  cityOption.style.visibility = "visible";
-}
-
-async function showDistrictsInThisCity(city) {
-  let districInThisCity = await getDistricts();
-  const selectedCity = districInThisCity.get(city);
-
-  let html = "";
-  let i = 0;
-  selectedCity.forEach(function (district) {
-    if (i === 0) {
-      html += `<option value="value">Pilih Kecamatan</option>`;
-    }
-    i++;
-    html += `<option value="${district}">${district}</option>`;
-  });
-
-  let cityOption = document.getElementById("city_list");
-  cityOption.disabled = true;
-  let districtOption = document.getElementById("district_list");
-  districtOption.innerHTML = html;
-  districtOption.style.visibility = "visible";
-}
-
-// GET WEATHER DATA
-async function fetchData() {
-  let allData = await getWilayah();
-
-  var get = document.getElementById("district_list");
-  var dis = get.value;
-
-  let idDistrict = 0;
-  allData.forEach((data) => {
-    if (data.kecamatan === dis) {
-      idDistrict = data.id;
-    }
-  });
-
-  let weather = await getCuaca(idDistrict);
-
-  let html = "";
-  let i = 1;
-  weather.forEach((cuaca) => {
-    let jam = "";
-    if (
-      cuaca.jamCuaca.slice(11, 13) === "00" ||
-      cuaca.jamCuaca.slice(11, 13) === "18"
-    ) {
-      jam = "pm";
-    } else {
-      jam = "am";
-    }
-
-    let jenisCuaca = cuaca.cuaca.toLowerCase();
-
-    if (i === 1) {
-      html += `<div class="card card-1">
-               <h2>Hari Ini (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
-    } else if (i === 5) {
-      html += `</div>
+      if (i === 1) {
+        html += `<div class="card card-1">
+               <h2>Hari Ini (${dCuaca.jamCuaca.slice(0, 10)})</h2>`;
+      } else if (i === 5) {
+        html += `</div>
                <div class="card card-2">
-               <h2>Besok (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
-    } else if (i === 9) {
-      html += `</div>
+               <h2>Besok (${dCuaca.jamCuaca.slice(0, 10)})</h2>`;
+      } else if (i === 9) {
+        html += `</div>
                <div class="card card-3">
-               <h2>Lusa (${cuaca.jamCuaca.slice(0, 10)})</h2>`;
-    }
+               <h2>Lusa (${dCuaca.jamCuaca.slice(0, 10)})</h2>`;
+      }
 
-    if (i % 4 === 1) {
-      let htmlSegment = `<div class="row">
+      if (i % 4 === 1) {
+        let htmlSegment = `<div class="row">
                          <div class="column">
-                         <h3>Pukul ${cuaca.jamCuaca.slice(11, 16)}</h3>
+                         <h3>Pukul ${dCuaca.jamCuaca.slice(11, 16)}</h3>
                          <img src="img/${jenisCuaca}-${jam}.png" width="50"/>
-                         <h4>${cuaca.cuaca}</h4>
-                         <p>${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
-                         <h5>Kelembapan: ${cuaca.humidity}%</h5>
+                         <h4>${dCuaca.cuaca}</h4>
+                         <p>${dCuaca.tempC}°C || ${dCuaca.tempF}°F</p>
+                         <h5>Kelembapan: ${dCuaca.humidity}%</h5>
                          </div>`;
-      html += htmlSegment;
-    } else if (i % 4 === 0) {
-      let htmlSegment = `<div class="column">
-                         <h3>Pukul ${cuaca.jamCuaca.slice(11, 16)}</h3>
+        html += htmlSegment;
+      } else if (i % 4 === 0) {
+        let htmlSegment = `<div class="column">
+                         <h3>Pukul ${dCuaca.jamCuaca.slice(11, 16)}</h3>
                          <img src="img/${jenisCuaca}-${jam}.png" width="50"/>
-                         <h4>${cuaca.cuaca}</h4>
-                         <p>${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
-                         <h5>Kelembapan: ${cuaca.humidity}%</h5>
+                         <h4>${dCuaca.cuaca}</h4>
+                         <p>${dCuaca.tempC}°C || ${dCuaca.tempF}°F</p>
+                         <h5>Kelembapan: ${dCuaca.humidity}%</h5>
                          </div>
                          </div>`;
-      html += htmlSegment;
-    } else {
-      let htmlSegment = `<div class="column">
-                         <h3>Pukul ${cuaca.jamCuaca.slice(11, 16)}</h3>
+        html += htmlSegment;
+      } else {
+        let htmlSegment = `<div class="column">
+                         <h3>Pukul ${dCuaca.jamCuaca.slice(11, 16)}</h3>
                          <img src="img/${jenisCuaca}-${jam}.png" width="50"/>
-                         <h4>${cuaca.cuaca}</h4>
-                         <p>${cuaca.tempC}°C || ${cuaca.tempF}°F</p>
-                         <h5>Kelembapan: ${cuaca.humidity}%</h5>
+                         <h4>${dCuaca.cuaca}</h4>
+                         <p>${dCuaca.tempC}°C || ${dCuaca.tempF}°F</p>
+                         <h5>Kelembapan: ${dCuaca.humidity}%</h5>
                          </div>`;
-      html += htmlSegment;
-    }
-    if (i === 12) {
-      html += `</div>`;
-    }
-    i++;
-  });
+        html += htmlSegment;
+      }
+      if (i === 12) {
+        html += `</div>`;
+      }
+      i++;
+    });
 
-  document.getElementById("tampil").innerHTML = html;
+    document.getElementById("tampil").innerHTML = html;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-function resetOption() {
-  let provinceOption = document.getElementById("province_list");
-  provinceOption.disabled = false;
-  provinceOption.value = "value";
+function resetWilayah() {
+  let provinsiTerpilih = document.getElementById("province");
+  provinsiTerpilih.disabled = false;
+  provinsiTerpilih.value = "value";
 
-  let cityOption = document.getElementById("city_list");
-  cityOption.style.visibility = "hidden";
-  cityOption.disabled = false;
+  let kotaTerpilih = document.getElementById("city");
+  kotaTerpilih.style.visibility = "hidden";
+  kotaTerpilih.disabled = false;
 
-  let districtOption = document.getElementById("district_list");
-  districtOption.style.visibility = "hidden";
-  districtOption.disabled = false;
+  let kecamatanTerpilih = document.getElementById("district");
+  kecamatanTerpilih.style.visibility = "hidden";
+  kecamatanTerpilih.disabled = false;
 
   let tampil = document.getElementById("tampil");
   tampil.innerHTML = "";
