@@ -1,4 +1,3 @@
-// let dataWilayah = "";
 fetch("https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json")
   .then((res) => res.json())
   .then((data) => {
@@ -25,6 +24,7 @@ fetch("https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json")
     let daftarKota = kota(data);
     pilihProvinsi.addEventListener("change", function () {
       pilihProvinsi.disabled = true;
+      pilihProvinsi.style.cursor = "not-allowed";
       pilihKota.style.visibility = "visible";
       const provinsiTerpilih = pilihProvinsi.value;
       const kota = daftarKota.get(provinsiTerpilih);
@@ -45,6 +45,7 @@ fetch("https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json")
     let daftarKecamatan = kecamatan(data);
     pilihKota.addEventListener("change", function () {
       pilihKota.disabled = true;
+      pilihKota.style.cursor = "not-allowed";
       pilihKecamatan.style.visibility = "visible";
       const kotaTerpilih = pilihKota.value;
       const kecamatan = daftarKecamatan.get(kotaTerpilih);
@@ -61,14 +62,17 @@ fetch("https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json")
       pilihKecamatan.innerHTML = html;
     });
 
-    /////
-    pilihKecamatan.addEventListener("change", function () {
-      console.log(pilihKecamatan.value);
-    });
-
     let tomboltampil = document.getElementById("tombolTampil");
     tomboltampil.addEventListener("click", function () {
-      tampilkanCuaca(data, pilihKecamatan.value);
+      if (pilihProvinsi.value === "value") {
+        alert("Data wilayah belum lengkap\nPilih provinsi");
+      } else if (pilihKota.value === "value") {
+        alert("Data wilayah belum lengkap\nPilih Kota/Kab.");
+      } else if (pilihKecamatan.value === "value") {
+        alert("Data wilayah belum lengkap\nPilih Kecamatan");
+      } else {
+        tampilkanCuaca(data, pilihKecamatan.value);
+      }
     });
 
     let tombolReset = document.getElementById("tombolReset");
@@ -77,6 +81,7 @@ fetch("https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json")
     });
   });
 
+/// mengembalikan daftar provinsi di indonesia
 function provinsi(data) {
   try {
     const daftarProvinsi = new Set();
@@ -89,6 +94,7 @@ function provinsi(data) {
   }
 }
 
+/// mengembalikan daftar kota untuk setiap provinsi di indonesia
 function kota(data) {
   try {
     const provinsi = new Set();
@@ -111,6 +117,7 @@ function kota(data) {
   }
 }
 
+/// mengeembalikan daftar kecamatan untuk setiap kota di indonesia
 function kecamatan(data) {
   try {
     const kota = new Set();
@@ -134,6 +141,7 @@ function kecamatan(data) {
   }
 }
 
+/// mendapatkan data cuaca untuk daerah(kecamatan) tertentu
 async function cuaca(idWilayah) {
   let url = `https://ibnux.github.io/BMKG-importer/cuaca/${idWilayah}.json`;
   try {
@@ -144,6 +152,7 @@ async function cuaca(idWilayah) {
   }
 }
 
+/// menampilkan prakiraan cuaca dari daerah yang diinginkan
 async function tampilkanCuaca(data, wilayah) {
   try {
     let idWilayah = 0;
@@ -160,11 +169,13 @@ async function tampilkanCuaca(data, wilayah) {
     let html = "";
     let i = 1;
     dataCuaca.forEach((dCuaca) => {
-      // ada missing data di data.cuaca = Cerah
+      /// ada missing data di data.cuaca = Cerah
       if (dCuaca.kodeCuaca === "0") {
         dCuaca.cuaca = "Cerah";
       }
 
+      /// mengelompokan waktu am/pm untuk mempermudah menentukan pemakaian gambar ilustrasi cuaca
+      /// contoh: matahari -> cuaca cerah saat siang; bulan: cuaca cerah saat malam
       let jam = "";
       if (
         dCuaca.jamCuaca.slice(11, 13) === "00" ||
@@ -232,18 +243,23 @@ async function tampilkanCuaca(data, wilayah) {
   }
 }
 
+/// mereset pemilihan provinsi, kota, dan kecamatan
 function resetWilayah() {
   let provinsiTerpilih = document.getElementById("province");
   provinsiTerpilih.disabled = false;
   provinsiTerpilih.value = "value";
+  provinsiTerpilih.style.cursor = "default";
 
   let kotaTerpilih = document.getElementById("city");
   kotaTerpilih.style.visibility = "hidden";
   kotaTerpilih.disabled = false;
+  kotaTerpilih.value = "value";
+  kotaTerpilih.style.cursor = "default";
 
   let kecamatanTerpilih = document.getElementById("district");
   kecamatanTerpilih.style.visibility = "hidden";
   kecamatanTerpilih.disabled = false;
+  kecamatanTerpilih.value = "value";
 
   let tampil = document.getElementById("tampil");
   tampil.innerHTML = "";

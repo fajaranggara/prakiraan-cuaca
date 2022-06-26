@@ -18,12 +18,26 @@
         align-items: center;
         justify-content: center;
         background-color: rgba(238, 237, 237, 0.438);
-        color: rgb(105, 104, 104);
+        color: green;
         font-family: sans-serif;
       }
       .container {
         width: fit-content;
       }
+
+      select {
+        width: 32.8%;
+        padding: 10px 5px;
+        border: 2px solid green;
+        border-radius: 5px;
+        background-color: #f1f1f1;
+      }
+      @media (max-width: 767px) {
+        select {
+          width: 32%;
+        }
+      }
+
       .input {
         margin: 2rem;
       }
@@ -81,6 +95,30 @@
       h2 {
         text-align: center;
       }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: #4caf50;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 3px 6px #999;
+      }
+
+      .button:hover {
+        background-color: #3e8e41;
+      }
+
+      .button:active {
+        background-color: #3e8e41;
+        box-shadow: 3px 5px #666;
+        transform: translateY(1px);
+      }
     </style>
     <title>cuaca.id</title>
   </head>
@@ -88,21 +126,15 @@
     <div class="container">
       <div class="input">
         <h1>Prakiraan Cuaca di Wilayah Indonesia</h1>
-        <div id="pilih_wilayah">
-          <td>
-            <select id="province"></select>
-          </td>
-          <td>
-            <select id="city"></select>
-          </td>
-          <td>
-            <select id="district"></select>
-          </td>
-        </div>
+        <form>
+          <select id="province"></select>
+          <select id="city"></select>
+          <select id="district"></select>
+        </form>
         <br />
         <div>
-          <button id="tombolTampil" type="button">Tampilkan</button>
-          <button id="tombolReset" type="button">Reset</button>
+          <button id="tombolTampil" class="button">Tampilkan</button>
+          <button id="tombolReset" class="button">Reset</button>
         </div>
       </div>
 
