@@ -160,6 +160,11 @@ async function tampilkanCuaca(data, wilayah) {
     let html = "";
     let i = 1;
     dataCuaca.forEach((dCuaca) => {
+      // ada missing data di data.cuaca = Cerah
+      if (dCuaca.kodeCuaca === "0") {
+        dCuaca.cuaca = "Cerah";
+      }
+
       let jam = "";
       if (
         dCuaca.jamCuaca.slice(11, 13) === "00" ||
